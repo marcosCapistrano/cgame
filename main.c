@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "raylib.h"
 #include <math.h>
+#include "raylib.h"
+#include "game/area.h"
 
 #define WORLD_WIDTH 19
 #define WORLD_HEIGHT 19
 
-#define TILE_SIZE 80
 
 int main()
 {
@@ -19,27 +19,7 @@ int main()
     Rectangle tiles[WORLD_WIDTH][WORLD_HEIGHT] = {0};
     Color tilesColors[WORLD_WIDTH][WORLD_HEIGHT] = {0};
 
-    bool black = false;
-    for (int i = 0; i < WORLD_WIDTH; i++)
-    {
-        for (int j = 0; j < WORLD_HEIGHT; j++)
-        {
-            tiles[i][j].width = TILE_SIZE;
-            tiles[i][j].height = TILE_SIZE;
-            tiles[i][j].x = i * TILE_SIZE;
-            tiles[i][j].y = j * TILE_SIZE;
-
-            if (black)
-            {
-                tilesColors[i][j] = (Color){0, 0, 0, 100};
-            }
-            else
-            {
-                tilesColors[i][j] = (Color){255, 255, 255, 180};
-            }
-            black = !black;
-        }
-    }
+    Area_load(1);
 
     Camera2D camera = {0};
     camera.target = (Vector2){player.x, player.y};
@@ -47,7 +27,7 @@ int main()
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-    SetTargetFPS(60);
+    SetTargetFPS(2000);
 
     while (!WindowShouldClose())
     {
@@ -65,6 +45,13 @@ int main()
 
         camera.target = (Vector2){player.x + 20, player.y + 20};
 
+        if(player.x > 200)
+        {
+            Area_load(1);
+        }  else {
+            Area_load(2);
+        }
+
         // DRAW
         // --------------------------------
         BeginDrawing();
@@ -73,13 +60,7 @@ int main()
 
             BeginMode2D(camera);
             {
-                for (int i = 0; i < WORLD_WIDTH; i++)
-                {
-                    for (int j = 0; j < WORLD_HEIGHT; j++)
-                    {
-                        DrawRectangleRec(tiles[i][j], tilesColors[i][j]);
-                    }
-                }
+                        Area_draw();
                 DrawRectangleRec(player, RED);
             }
             EndMode2D();
@@ -95,6 +76,7 @@ int main()
             Vector2 mouseWorld = GetScreenToWorld2D(GetMousePosition(), camera);
             DrawText(TextFormat("Mouse Screen: [%i, %i]", GetMouseX(), GetMouseY()), 22, 22, 22, BLACK);
             DrawText(TextFormat("Mouse World: [%f, %f]", mouseWorld.x, mouseWorld.y), 22, 55, 22, BLACK);
+            DrawText(TextFormat("FPS: %.0f", 1/GetFrameTime()), 22, 77, 22, BLACK);
             /* ----------------------------------------- */
         }
         EndDrawing();

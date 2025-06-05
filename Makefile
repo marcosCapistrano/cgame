@@ -1,5 +1,5 @@
 build:
-	cc main.c -o game -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+	cc -g -O0 main.c game/area.c game/tile.c -o cgame -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
 run:
-	./game
+	./cgame
