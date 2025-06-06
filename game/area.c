@@ -14,6 +14,7 @@
 int tileCount;
 int objectCount;
 int entityCount;
+int roadPointCount;
 
 Area Area_current;
 
@@ -22,14 +23,22 @@ void Area_load(int areaNum)
     tileCount = 0;
     objectCount = 0;
     entityCount = 0;
+    roadPointCount = 0;
 
     tileCount = Tile_load(TextFormat("data/areas/%d/tiles.txt", areaNum), &Area_current);
+    roadPointCount = Road_load(TextFormat("data/areas/%d/roads.txt", areaNum), &Area_current);
 }
 
 void Area_draw()
 {
-    for (int i = 0; i < tileCount; i++)
+    // for (int i = 0; i < tileCount; i++)
+    // {
+    //     DrawRectangleV(Area_current.tilePositions[i], (Vector2){TILE_SIZE, TILE_SIZE}, Area_current.tileColors[i]);
+    // }
+
+    for(int i=0;i<roadPointCount;i++)
     {
-        DrawRectangleV(Area_current.tilePositions[i], (Vector2){TILE_SIZE, TILE_SIZE}, Area_current.tileColors[i]);
+        printf("x: %f, y: %f\n", Area_current.roadPoints[i].x, Area_current.roadPoints[i].y);
     }
+        DrawSplineCatmullRom(Area_current.roadPoints, roadPointCount, 80.0f, RED);
 }

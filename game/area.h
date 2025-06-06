@@ -7,6 +7,7 @@
 
 typedef struct Area {
     Vector2 tilePositions[256];
+    Vector2 roadPoints[50];
     Color tileColors[256];
 } Area;
 
