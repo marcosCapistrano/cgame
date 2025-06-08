@@ -1,54 +1,19 @@
 #include <stdio.h>
-#include <time.h>
-#include <math.h>
 #include "raylib.h"
-#include "raymath.h"
-#include "game/area.h"
+#include "physics/body.h"
 
-#define WORLD_WIDTH 19
-#define WORLD_HEIGHT 19
-
-typedef struct CircleBody
-{
-    float radius;
-    Vector2 position;
-    Vector2 velocity;
-    Vector2 acceleration;
-
-    Vector2 forces;
-    float invMass;
-} CircleBody;
-
-typedef struct BoxBody
-{
-    int width;
-    int height;
-
-    Vector2 position;
-    Vector2 velocity;
-    Vector2 acceleration;
-
-    Vector2 forces;
-    float invMass;
-} BoxBody;
+const int screenWidth = 800;
+const int screenHeight = 450;
 
 int main()
 {
-    const int screenWidth = 800;
-    const int screenHeight = 450;
-
     InitWindow(screenWidth, screenHeight, "2d-topdown");
-    Area_load(1);
 
-    CircleBody frontWheelSide = {0};
-    frontWheelSide.radius = 20.0f;
-    frontWheelSide.position = (Vector2){120, 40};
-    frontWheelSide.invMass = 1 / 5.0f;
+    CircleBody frontWheelSide;
+    Physics_NewCircleBody(&frontWheelSide, 120, 40, 20, 5.0f);
 
-    CircleBody backWheelSide = {0};
-    backWheelSide.radius = 20.0f;
-    backWheelSide.position = (Vector2){0, 40};
-    backWheelSide.invMass = 1 / 5.0f;
+    CircleBody backWheelSide;
+    Physics_NewCircleBody(&backWheelSide, 0, 40, 20, 5.0f);
 
     BoxBody bikeSide = {0};
     bikeSide.width = 120;
@@ -84,6 +49,12 @@ int main()
     {
         // UPDATE
         // --------------------------------
+        float deltaTime = GetFrameTime();
+
+        frontWheelSide.torques = 500000.0f;
+
+        Physics_UpdateCircle(&frontWheelSide, deltaTime);
+        Physics_UpdateCircle(&backWheelSide, deltaTime);
 
         cameraSide.target = (Vector2){bikeSide.position.x + bikeSide.width / 2, bikeSide.position.y};
 
@@ -102,12 +73,12 @@ int main()
                     for (int j = 0; j < 20; j++)
                     {
                         Color color;
-                        if((i+j)%2 == 0)
+                        if ((i + j) % 2 == 0)
                             color = GRAY;
                         else
                             color = WHITE;
 
-                        DrawRectangle(-300 + (i*50), -300 + (j*50), 50, 50, color);
+                        DrawRectangle(-300 + (i * 50), -300 + (j * 50), 50, 50, color);
                         colorToggle = !colorToggle;
                     }
                 }
@@ -115,7 +86,10 @@ int main()
 
                 /* BIKE SIDE */
                 DrawCircle(frontWheelSide.position.x, frontWheelSide.position.y, frontWheelSide.radius, BLACK);
+                DrawLine(frontWheelSide.position.x, frontWheelSide.position.y, frontWheelSide.position.x + (cos(DEG2RAD * frontWheelSide.rotation) * frontWheelSide.radius), frontWheelSide.position.y + (sin(DEG2RAD * frontWheelSide.rotation) * frontWheelSide.radius), WHITE);
+
                 DrawCircle(backWheelSide.position.x, backWheelSide.position.y, backWheelSide.radius, BLACK);
+                DrawLine(backWheelSide.position.x, backWheelSide.position.y, backWheelSide.position.x + (cos(DEG2RAD * backWheelSide.rotation) * backWheelSide.radius), backWheelSide.position.y + (sin(DEG2RAD * backWheelSide.rotation) * backWheelSide.radius), WHITE);
 
                 DrawRectangle(bikeSide.position.x, bikeSide.position.y, bikeSide.width, bikeSide.height, DARKGREEN);
                 /* ----------------------------------- */
