@@ -31,14 +31,9 @@ void Area_load(int areaNum)
 
 void Area_draw()
 {
-    // for (int i = 0; i < tileCount; i++)
-    // {
-    //     DrawRectangleV(Area_current.tilePositions[i], (Vector2){TILE_SIZE, TILE_SIZE}, Area_current.tileColors[i]);
-    // }
-
-    for(int i=0;i<roadPointCount;i++)
+    for (int i = 0; i < tileCount; i++)
     {
-        printf("x: %f, y: %f\n", Area_current.roadPoints[i].x, Area_current.roadPoints[i].y);
+        DrawRectangleV(Area_current.tilePositions[i], (Vector2){TILE_SIZE, TILE_SIZE}, Area_current.tileColors[i]);
     }
-        DrawSplineCatmullRom(Area_current.roadPoints, roadPointCount, 80.0f, RED);
+    DrawSplineCatmullRom(Area_current.roadPoints, roadPointCount, 80.0f, RED);
 }

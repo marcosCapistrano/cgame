@@ -23,7 +23,7 @@ int Tile_load(const char *filename, Area *currentArea)
                 {
                     if (ch == '0')
                     {
-                        currentArea->tileColors[count] = BLACK;
+                        currentArea->tileColors[count] = GRAY;
                     }
                     else if (ch == '1')
                     {
